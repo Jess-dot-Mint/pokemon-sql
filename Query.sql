@@ -117,10 +117,10 @@ ORDER BY r.attack DESC;
 -- 3. Top 10 Pokémon con mayor `special_attack`.
 
 SELECT name, special_attack FROM(
-SELECT name, special_attack, DENSE_RANK() OVER(PARTITION BY special_attack) FROM pokeDB
-) AS top_ten;
+SELECT name, special_attack, DENSE_RANK() OVER(ORDER BY special_attack DESC) FROM pokeDB
+limit 10) AS top_ten;
 
-SELECT name, special_attack, DENSE_RANK() OVER(PARTITION BY special_attack ORDER BY special_attack ASC) FROM pokeDB;
+
 
 SELECT name, special_attack FROM pokeDB
 ORDER BY special_attack DESC
@@ -129,8 +129,45 @@ limit 10;
 
 
 -- 4. Cantidad de Pokémon sin tipo secundario.
--- 5. Distribución de Pokémon por generación.
+SELECT pokemon_id, name, secondary_type FROM pokeDB
+WHERE secondary_type = "";
+ 
 
+SELECT count(pokemon_id) as number_whit_no_secondary_type FROM pokeDB
+WHERE secondary_type = "";
+
+-- 5. Distribución de Pokémon por generación.
+SELECT generation, COUNT(generation) as number_of_pokemon_by_generation FROM  pokeDB
+group by generation;
+
+
+### Nivel Avanzado ######################################### †
+
+
+-- 1. Tipos primarios cuyo promedio de `total_base_stats` es mayor a 500.
+
+SELECT primary_type, AVG(total_base_stats) as mean FROM pokeDB
+GROUP BY primary_type
+HAVING mean > 500;
+
+
+SELECT primary_type, round(AVG(total_base_stats),1) as mean FROM pokeDB
+GROUP BY primary_type
+HAVING mean > 400;
+
+SELECT primary_type, round(AVG(total_base_stats),1) as mean FROM pokeDB
+GROUP BY primary_type
+HAVING mean <400;
+
+-- 2. Pokémon más fuerte de cada generación (subconsulta).
+SELECT name, generation, attack FROM(
+SELECT name, generation, attack, DENSE_RANK() OVER (PARTITION BY generation ORDER BY attack DESC) as rank_strong FROM pokeDB) as r
+WHERE r.rank_strong = 1;
+
+
+-- 3. Comparación de promedios de ataque y defensa entre Pokémon con y sin tipo secundario.
+-- 4. Clasificación de Pokémon por rango de poder usando `CASE`.
+-- 5. Ranking de Pokémon por velocidad dentro de cada tipo primario (`RANK()`).
 
 
 
