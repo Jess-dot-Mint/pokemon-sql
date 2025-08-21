@@ -166,8 +166,33 @@ WHERE r.rank_strong = 1;
 
 
 -- 3. Comparación de promedios de ataque y defensa entre Pokémon con y sin tipo secundario.
+
+
+SELECT 
+CASE 
+	WHEN secondary_type = "" THEN  "Sin tipo secundadario"
+    ELSE "Con tipo secundario"
+    END AS TIPO,
+    round(AVG(attack),2) AS avg_attack, round(AVG(defense),2) as avg_defense 
+FROM pokeDB
+GROUP BY tipo;
+
+
+
 -- 4. Clasificación de Pokémon por rango de poder usando `CASE`.
+SELECT name, total_base_stats,
+CASE
+	WHEN total_base_stats <= 340 THEN "Débil"
+    WHEN total_base_stats <=467 THEN "Medio"
+	WHEN total_base_stats <= 594 THEN "Fuerte"
+	ELSE "Legendario"
+END AS  poder
+FROM pokeDB;
+
+SELECT total_base_stats FROM pokeDB
+ORDER BY total_base_stats DESC;
+
 -- 5. Ranking de Pokémon por velocidad dentro de cada tipo primario (`RANK()`).
 
-
+SELECT name, primary_type, speed, DENSE_RANK() OVER(PARTITION BY primary_type Order by speed DESC ) as rank_Speed FROM pokeDB;
 
