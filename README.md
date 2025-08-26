@@ -1,7 +1,9 @@
+
 # Proyecto SQL: Análisis de Pokémon
 
-Este proyecto consiste en analizar un dataset de Pokémon utilizando **MySQL**.  
-El dataset contiene información sobre 1025 Pokémon, incluyendo sus tipos, estadísticas base, generación y primera aparición.
+## Exploración y análisis en SQL de una base de datos de Pokémon, enfocada en estadísticas, tipos y generaciones.
+
+Este proyecto presenta un análisis exploratorio en SQL (**MySQL**.) utilizando una base de datos de Pokémon. El dataset contiene información sobre 1025 Pokémon, incluyendo sus tipos, estadísticas base, generación y primera aparición. A través de consultas progresivas se investigan las estadísticas base, diferencias entre tipos primarios y secundarios, tendencias por generación y rankings de atributos como velocidad, ataque y defensa. El objetivo es practicar consultas SQL (incluyendo funciones de agregación, joins, CTEs y funciones de ventana) y al mismo tiempo obtener hallazgos interesantes sobre el mundo Pokémon.
 
 
 
