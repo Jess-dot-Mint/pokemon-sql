@@ -50,14 +50,13 @@ ORDER BY number_of_emptys DESC;
 
 Muestra una lista de los pokemon ordenada de los más fuertes a más débiles, siendo Arceus el más fuerte y Spewpa el más débil.
 
-![alt text](image.png)
+
 
 # --------------------------------------------------------------------------------------------
 3. Filtrar Pokémon por tipo secundario específico.
 
 Esta consulta permite fltrar los pokémon pertenecientes a un sipo secundario específico dado.
 
-![alt text](image-1.png)
 
 # --------------------------------------------------------------------------------------------
 
@@ -79,12 +78,8 @@ WHERE sub.number_of_pokemon >= (SELECT round(AVG(number_of_pokemon),2) as  prome
 
 
 
-![alt text](image-2.png)
-
 
 Número de pokémon por tipo primario, por debajo del promedio.
-
-![alt text](image-3.png)
 
 # --------------------------------------------------------------------------------------------
 
@@ -168,7 +163,7 @@ Para esta consulta se hizo uso de CASE para hacer una nueva columna, llamada TIP
 
 Se observa que los pokémon con tipo secundario tienen una pequeña ventaja en promedio de ataque y defensa sobre los pokémon sin tipo secundario.
 
-![alt text](image-4.png)
+
 
 
 
@@ -203,7 +198,7 @@ FROM pokeDB;
 
 En esta última consulta, utilizamos DENSE_RANK() y PARTITION BY para que el ranqueo, se realizara por cada uno de los tipos primarios. Se usó s DENSE_RANK() en vez de RANK(), para que el ranqueo fuera el mismo para los empates.  
 
-![alt text](image-5.png)
+
 
 # --------------------------------------------------------------------------------------------
 
