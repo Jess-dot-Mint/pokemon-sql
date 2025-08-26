@@ -23,15 +23,23 @@ CREATE TABLE pokeDB (
 
 
 
+## Consultas previas
 
+SELECT	COUNT(pokemon_id) FROM pokeDB;
 
 
 SELECT * FROM pokeDB;
 
 ### Nivel Básico
 -- 1. Listar todos los Pokémon con su tipo primario y secundario.
-SELECT name, primary_type, secondary_type FROM pokeDB;
 
+
+SELECT name,   primary_type, secondary_type FROM pokeDB; -- Tabla de nombres de pokemon con su tipo primario y secundario
+
+SELECT generation, COUNT(secondary_type) AS number_of_emptys FROM pokeDB -- numero de pokemon sin tipo secundario
+WHERE secondary_type = ""
+GROUP BY generation
+ORDER BY number_of_emptys DESC;
 
 -- 2. Mostrar todos los Pokémon ordenados por `total_base_stats` de mayor a menor.
 SELECT * FROM pokeDB
@@ -55,21 +63,59 @@ WHERE secondary_type = "dragon";
 
 -- 4. Contar cuántos Pokémon hay por `primary_type`.
 
-SELECT upper(), COUNT(primary_type) number_of_pokemon FROM pokeDB
+SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
 group by primary_type
 ORDER BY number_of_pokemon DESC;
 
 
+
+
+SELECT round(AVG(number_of_pokemon),2) as  promedio_por_tipo_primario FROM(
+	SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
+	group by primary_type
+) AS prom;
+
+
+
+
+
+SELECT primary_type, sub.number_of_pokemon FROM (
+SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
+group by primary_type
+ORDER BY number_of_pokemon DESC
+) AS sub
+WHERE sub.number_of_pokemon >= (SELECT round(AVG(number_of_pokemon),2) as  promedio_por_tipo_primario FROM(
+	SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
+	group by primary_type
+) AS prom);
+
+
+SELECT primary_type, sub.number_of_pokemon FROM (
+SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
+group by primary_type
+ORDER BY number_of_pokemon DESC
+) AS sub
+WHERE sub.number_of_pokemon < (SELECT round(AVG(number_of_pokemon),2) as  promedio_por_tipo_primario FROM(
+	SELECT primary_type, COUNT(primary_type)  AS number_of_pokemon FROM pokeDB
+	group by primary_type
+) AS prom);
+
+
+
+
+
+
+
 ### Nivel Intermedio
 -- 1. Promedio de `attack` y `defense` por tipo primario.
-SELECT primary_type, round(AVG(attack),2)as Promedio_ataque, round(AVG(defense),2) as Promedio_defensa FROM pokeDB
+SELECT primary_type, round(AVG(attack),1)as Promedio_ataque, round(AVG(defense),1) as Promedio_defensa FROM pokeDB
 GROUP BY primary_type;
 
 -- 2. Pokémon más rápido (`speed`) de cada generación.
 
 -- MEDIANTE SUBCONSULTAS y JOINS
 
-select p.generation, p.name,  p.speed from pokeDB as p
+SELECT p.generation, p.name,  p.speed from pokeDB as p
 JOIN (SELECT generation, MAX(speed) as max_speed FROM  pokeDB
 GROUP BY  generation
 ) AS vm
@@ -87,6 +133,14 @@ FROM pokeDB
 ) as ranked
 WHERE ranked_speed = 1
 ORDER BY generation;
+
+SELECT generation, name, speed 
+FROM(
+SELECT generation, name, speed, Rank() OVER(partition by generation ORDER BY speed DESC) AS ranked_speed
+FROM pokeDB
+) as ranked
+WHERE ranked_speed = 1
+ORDER BY speed;
 
 
 -- 2b. Pokémon con mayor attack en cada tipo primario
@@ -122,7 +176,7 @@ limit 10) AS top_ten;
 
 
 
-SELECT name, special_attack FROM pokeDB
+SELECT name, special_attack, generation FROM pokeDB
 ORDER BY special_attack DESC
 limit 10;
 
@@ -131,10 +185,12 @@ limit 10;
 -- 4. Cantidad de Pokémon sin tipo secundario.
 SELECT pokemon_id, name, secondary_type FROM pokeDB
 WHERE secondary_type = "";
- 
+
 
 SELECT count(pokemon_id) as number_whit_no_secondary_type FROM pokeDB
 WHERE secondary_type = "";
+
+
 
 -- 5. Distribución de Pokémon por generación.
 SELECT generation, COUNT(generation) as number_of_pokemon_by_generation FROM  pokeDB
@@ -194,5 +250,6 @@ ORDER BY total_base_stats DESC;
 
 -- 5. Ranking de Pokémon por velocidad dentro de cada tipo primario (`RANK()`).
 
-SELECT name, primary_type, speed, DENSE_RANK() OVER(PARTITION BY primary_type Order by speed DESC ) as rank_Speed FROM pokeDB;
+SELECT name, primary_type, speed, 
+DENSE_RANK() OVER(PARTITION BY primary_type Order by speed DESC ) as rank_Speed FROM pokeDB;
 
